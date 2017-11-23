@@ -12,3 +12,6 @@ Taskmasterd is configured using a simple `config.json`. Following are the config
 
 	# Echo commands:
 	"echoCommands" : <true/false>
+
+	# Job config directory:
+	"jobsDirectory" : <relative path>
