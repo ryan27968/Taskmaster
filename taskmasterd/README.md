@@ -8,10 +8,12 @@ Taskmasterd is configured using a simple `config.json`. Following are the config
 	"tcpListen" : <port number>
 
 	# Enable remote connections:
-	"remoteListen" : <true/false>
+	"remoteListen" : <1/0>
 
 	# Echo commands:
-	"echoCommands" : <true/false>
+	"echoCommands" : <1/0>
 
 	# Job config directory:
 	"jobsDirectory" : <relative path>
+
+Alternatively, if you simply run the program without configuring it, an interactive setup wizard will automatically run.
