@@ -1,10 +1,6 @@
-import std.stdio;
+import config;
 
 void main()
 {
-	writeln("Edit source/app.d to start your project.");
-	writeln("Edit source/app.d to start your project.");
-	writeln("Edit source/app.d to start your project.");
-	writeln("Edit source/app.d to start your project.");
-	writeln("Edit source/app.d to start your project.");
+    readFile();
 }
