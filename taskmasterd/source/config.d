@@ -28,7 +28,11 @@ void	readFile()
 {
 	if (exists(configFile) && isFile(configFile))
 	{
-		globalStruct fromFile = jsonDecode!globalStruct(readText(configFile));
+		globalStruct fromFile;
+		try
+			fromFile = jsonDecode!globalStruct(readText(configFile));
+		catch (jsonx.JsonException e)
+		{}
 		if (fromFile.port == -1 || fromFile.remoteConnections == -1 ||
 		fromFile.echoCommands == -1 || fromFile.configDirectory.length == 0)
 		{

@@ -609,7 +609,7 @@ JsonNull jsonDecode_impl(T, R)(ref R input) if(isInputCharRange!R && is(T == Jso
     return JsonNull();
 }
 
-class JsonException : Exception {
+public class JsonException : Exception {
     this(string s) @safe pure nothrow{
         super(s);
     }
