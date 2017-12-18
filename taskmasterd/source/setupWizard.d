@@ -11,7 +11,7 @@ void	setupWizard()
 {
 	bool			end = false;
 	string			tempStr;
-	int				tempInt = 0;
+	ushort			tempNum = 0;
 	globalStruct	tempStruct;
 	
 	//	Port Number
@@ -24,9 +24,9 @@ void	setupWizard()
 			tempStruct.port = defaults.port;
 			end = true;
 		}
-		else if (isNumeric(tempStr) && (tempInt = to!int(tempStr)) >= 0 && tempInt <= 65535)
+		else if (isNumeric(tempStr) && (tempNum = to!ushort(tempStr)) >= 0 && tempNum <= 65535)
 		{
-			tempStruct.port = tempInt;
+			tempStruct.port = tempNum;
 			end = true;
 		}
 		else
