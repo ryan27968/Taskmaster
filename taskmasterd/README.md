@@ -8,10 +8,10 @@ Taskmasterd is configured using a simple `config.json`. Following are the config
 	"port" : <port number>
 
 	# Enable remote connections:
-	"remoteConnections" : <1/0>
+	"remoteConnections" : <true/false>
 
 	# Echo commands:
-	"echoCommands" : <1/0>
+	"echoCommands" : <true/false>
 
 	# Job config directory:
 	"configDirectory" : <relative path>

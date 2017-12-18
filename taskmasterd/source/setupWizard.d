@@ -112,9 +112,30 @@ void	setupWizard()
 		tempStr = readln().strip;
 		if (tempStr.length == 0)
 			tempStr = defaults.configDirectory;
+		if (!tempStr.exists)
+			mkdir(tempStr);
 		if (tempStr.exists && tempStr.isDir)
 		{
 			tempStruct.configDirectory = tempStr;
+			end = true;
+		}
+		else
+			std.stdio.write("\"", tempStr, "\" is not a directory.\n");
+	}
+	end = false;
+
+	//Log directory
+	while(!end)
+	{
+		std.stdio.write("\nWhere do you want to store your log files?\n[", defaults.logDirectory, "] ");
+		tempStr = readln().strip;
+		if (tempStr.length == 0)
+			tempStr = defaults.logDirectory;
+		if (!tempStr.exists)
+			mkdir(tempStr);
+		if (tempStr.exists && tempStr.isDir)
+		{
+			tempStruct.logDirectory = tempStr;
 			end = true;
 		}
 		else

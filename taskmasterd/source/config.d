@@ -1,5 +1,6 @@
 import std.file;
 import std.stdio;
+import std.string;
 import global;
 import jsonx;
 import setupWizard;
@@ -29,18 +30,22 @@ void	readFile()
 	if (exists(configFile) && isFile(configFile))
 	{
 		globalStruct fromFile;
+		string fileText = readText(configFile);
 		try
-			fromFile = jsonDecode!globalStruct(readText(configFile));
-		catch (jsonx.JsonException e)
-		{}
-		if (fromFile.port == -1 || fromFile.remoteConnections == -1 ||
-		fromFile.echoCommands == -1 || fromFile.configDirectory.length == 0)
 		{
-			writeln("\"", configFile, "\" incomplete/invalid. Running setup wizard.");
-			setDefaults(fromFile);
+			fromFile = jsonDecode!globalStruct(fileText);
+			if (indexOf(fileText, "\"port\":") != -1
+			&&	indexOf(fileText, "\"remoteConnections\":") != -1
+			&&	indexOf(fileText, "\"echoCommands\":") != -1
+			&&	indexOf(fileText, "\"configDirectory\":") != -1
+			&&	indexOf(fileText, "\"logDirectory\":") != -1)
+			{
+				set(fromFile);
+				return ;
+			}
 		}
-		else
-			return ;
+		catch (jsonx.JsonException e){}
+		writeln("\"", configFile, "\" incomplete/invalid. Running setup wizard.");
 	}
 	else
 		writeln("\"", configFile, "\" does not exist. Running setup wizard.");
