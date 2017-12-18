@@ -1,12 +1,9 @@
 import std.file;
 import std.stdio;
 import std.string;
-import std.algorithm.sorting;
 
 import global;
 import jsonx;
-
-extern (C) ushort	umask(ushort mask);
 
 struct jobDataStr
 {
