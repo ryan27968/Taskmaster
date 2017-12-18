@@ -21,18 +21,22 @@ When pushing a job, you will need an extra "data" field containing the contents 
 **Note: The `"job"` and `"data"` fields will always be base64 encoded.**
 
 A query might look something like this:
-`{
+```json
+{
 	"command" : "kill",
 	"job" : "bmdpbng="
-}`
+}
+```
 Where `"bmdpbng="` is _"nginx"_ in b64.
 
 A push would look something like so:
-`{
+```json
+{
 	"command" : "push",
 	"job" : "<b64-encoded job name>",
 	"data" : "<b64-encoded file>"
-}`
+}
+```
 
 **Note: Although whitespace is shown in these examples, the actual transmitted data shouldn't have any whitespace.**
 
@@ -48,33 +52,41 @@ The responses will be transmitted in a similar manner. The valid responses and t
 **Note: Just as with commands, the `"error"`, `"job"`,  `"data"`, and `"list"` fields will always be base64 encoded.**
 
 A response might look something like this:
-`{
+```json
+{
 	"response" : "fail",
 	"error" : "SW52YWxpZCBqb2IgbmFtZS4="
-}`
+}
+```
 Where `"SW52YWxpZCBqb2IgbmFtZS4="` means _"Invalid job name."_.
 
 A file would look something like this:
-`{
+```json
+{
 	"response" : "file",
 	"job" : "<b64-encoded job name>",
 	"data" : "<b64-encoded file>"
-}`
+}
+```
 
 And a list would look like so:
-`{
+```json
+{
 	"response" : "list",
 	"list" : "<b64-encoded json list>"
-}`
+}
+```
 
 The json list itself would look something like:
-`{
+```json
+{
 	"jobs":
 	[
 		{"name" : "nginx"},
 		{"name" : "apache2"}
 	]
-}`
+}
+```
 
 **Note: Just as with commands, the transmitted data shouldn't have any whitespace.**
 
