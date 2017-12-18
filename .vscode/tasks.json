@@ -18,7 +18,7 @@
             "command": "make -C taskmasterctl debug",
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false
             }
         }
     ]
