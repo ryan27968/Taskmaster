@@ -16,4 +16,7 @@ Taskmasterd is configured using a simple `config.json`. Following are the config
 	# Job config directory:
 	"configDirectory" : <relative path>
 
+	# Log config directory:
+	"logDirectory" : <relative path>
+
 Alternatively, if you simply run the program without configuring it, an interactive setup wizard will automatically run.
