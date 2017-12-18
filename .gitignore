@@ -1,0 +1,5 @@
+*.o
+taskmasterd
+taskmasterctl
+config/*
+log/*
