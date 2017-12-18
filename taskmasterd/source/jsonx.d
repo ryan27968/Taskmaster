@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+/*
+**  NOTE: Line 599(now 603) has been modified by Ryan David Sheasby.
+**  More explanation can be read on the line in question.
+**  this modification is licensed under the MIT license.
+**  the full text of this license can be read in the LICENSE file.
+*/
+
 module jsonx;
 
 import std.algorithm : find;
@@ -595,8 +602,12 @@ bool jsonDecode_impl(T, R)(ref R input) if(isInputCharRange!R && is(T == bool)) 
         enforceChar(input, 'e', false);
         return false;
     }
-
-    assert(0);
+/*
+**  The following line has been commented out and replaced by Ryan David Sheasby
+**  to make it more resistant to invalid input.
+*/
+    //assert(0);
+    throw new JsonException("Invalid bool.");
 }
 
 /* Decode JSON null -> D null */
