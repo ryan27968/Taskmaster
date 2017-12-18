@@ -17,8 +17,9 @@
 /*
 **  NOTE: Line 599(now 603) has been modified by Ryan David Sheasby.
 **  More explanation can be read on the line in question.
-**  this modification is licensed under the MIT license.
-**  the full text of this license can be read in the LICENSE file.
+**  This modification is licensed under the MIT license.
+**  The full text of this license can be read in the LICENSE file in the root
+**  of this repository or at https://opensource.org/licenses/MIT
 */
 
 module jsonx;

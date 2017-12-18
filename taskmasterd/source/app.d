@@ -6,17 +6,17 @@ import global;
 void main()
 {
 	readFile();
-    Socket server = new TcpSocket();
-    server.setOption(SocketOptionLevel.SOCKET, SocketOption.REUSEADDR, true);
+	Socket server = new TcpSocket();
+	server.setOption(SocketOptionLevel.SOCKET, SocketOption.REUSEADDR, true);
 	if (globals.remoteConnections)
-    	server.bind(new InternetAddress(globals.port));
+		server.bind(new InternetAddress(globals.port));
 	else
 		server.bind(new InternetAddress("127.0.0.1", globals.port));
-    server.listen(1);
-    server.blocking(0);
+	server.listen(1);
+	server.blocking(0);
 	Socket client;
 	char[1024] buffer;
-    while(true) {
+	while(true) {
 		if (client is null || !client.isAlive)
 			try
 				client = server.accept();
@@ -34,5 +34,5 @@ void main()
 				write(buffer[0.. received]);
 		}
 		//Do continuous stuff.
-    }
+	}
 }
