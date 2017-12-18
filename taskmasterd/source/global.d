@@ -1,7 +1,7 @@
 //	Global variables.
 struct globalStruct
 {
-	int		port = -1;
+	ushort	port = 0;
 	bool	remoteConnections = false;
 	bool	echoCommands = true;
 	string	configDirectory;
