@@ -4,31 +4,7 @@ import std.string;
 
 import global;
 import jsonx;
-
-struct jobDataStr
-{
-	string		cmd;
-	int			procNr;
-	bool		autoStart;
-	byte		restart;
-	int			startTime;
-	byte		normalExitSig;
-	int			restartTimes;
-	bool		stopSig;
-	int			stopTime;
-	string		stdout;
-	string		stderr;
-	string[]	env;
-	string		dir;
-	ushort		umask;
-}
-
-class job
-{
-	jobDataStr data;
-}
-
-job[string] jobs;
+import jobs;
 
 void	parseFile(string filename)
 {
@@ -66,8 +42,8 @@ void	parseFile(string filename)
 	name = chomp(filename, ".tm.json");
 	name = chompPrefix(name, globals.configDirectory);
 	name = name[1 .. name.length];
-	jobs[name] = new job;
-	jobs[name].data = tempJob;
+	jobs.jobs[name] = new job;
+	jobs.jobs[name].data = tempJob;
 }
 
 void	parseDir()
