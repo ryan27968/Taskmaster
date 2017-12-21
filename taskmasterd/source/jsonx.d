@@ -15,7 +15,7 @@
  */
 
 /*
-**  NOTE: Line 599(now 603) has been modified by Ryan David Sheasby.
+**  NOTE: Line 599(now 610) has been modified by Ryan David Sheasby.
 **  More explanation can be read on the line in question.
 **  This modification is licensed under the MIT license.
 **  The full text of this license can be read in the LICENSE file in the root
