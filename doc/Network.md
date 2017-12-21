@@ -1,8 +1,8 @@
-# How do the programs communicate?
+#	How do the programs communicate?
 Taskmasterctl and Taskmasterd communicate over a simple TCP socket.
 The communication protocol is simple json.
 
-## Commands
+##	Commands
 The valid commands and their required extra fields are:
 
  - `"start"`	<`"job"`>			# Start a job 
@@ -40,7 +40,7 @@ A push would look something like so:
 
 **Note: Although whitespace is shown in these examples, the actual transmitted data shouldn't have any whitespace.**
 
-## Responses
+##	Responses
 The responses will be transmitted in a similar manner. The valid responses and their required extra fields are:
  - `"success"`							# Command successful.
  - `"fail"`			<`"error"`>			# Command failed.
@@ -90,5 +90,5 @@ The json list itself would look something like:
 
 **Note: Just as with commands, the transmitted data shouldn't have any whitespace.**
 
-## Connection
+##	Connection
 The connection by default runs over port `7777` and only accepts connections from `localhost`, although these can both be configured. There is no authentication nor encryption so using this over a network for anything but testing is not recommended. 
