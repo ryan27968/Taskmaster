@@ -51,15 +51,3 @@ void	readFile()
 		writeln("\"", configFile, "\" does not exist. Running setup wizard.");
 	setupWizard.setupWizard();
 }
-
-void	setDefaults(globalStruct fromFile)
-{
-	if (fromFile.port != -1)
-		defaults.port = fromFile.port;
-	if (fromFile.remoteConnections != -1)
-		defaults.remoteConnections = fromFile.remoteConnections;
-	if (fromFile.echoCommands != -1)
-		defaults.echoCommands = fromFile.echoCommands;
-	if (fromFile.configDirectory.length > 0)
-		defaults.configDirectory = fromFile.configDirectory;
-}
