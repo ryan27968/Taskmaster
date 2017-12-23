@@ -36,7 +36,7 @@ void	readFile()
 			fromFile = jsonDecode!globalStruct(fileText);
 			if (indexOf(fileText, "\"port\":") != -1
 			&&	indexOf(fileText, "\"remoteConnections\":") != -1
-			&&	indexOf(fileText, "\"echoCommands\":") != -1
+			&&	indexOf(fileText, "\"verbosity\":") != -1
 			&&	indexOf(fileText, "\"configDirectory\":") != -1
 			&&	indexOf(fileText, "\"logDirectory\":") != -1)
 			{
