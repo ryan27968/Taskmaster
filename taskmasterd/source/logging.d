@@ -22,42 +22,57 @@ class tmdLog
 	{
 		File	log;
 		string	logPath;
+		string	msgString;
+		string	errString;
+		string	netString;
 
 		void	init()
 		{
 			logPath = globals.logDirectory ~ "/taskmasterd/";
 			mkdirRecurse(logPath);
 			log = File(logPath ~ fileTime() ~ ".log", "a");
+			if (colorTerm)
+			{
+				msgString = "\033[33mMSG:\033[39m ";
+				errString = "\033[31mERR:\033[39m ";
+				netString = "\033[32mNET:\033[39m ";
+			}
+			else
+			{
+				msgString = "MSG: ";
+				errString = "ERR: ";
+				netString = "NET: ";
+			}
 		}
 
-		void	message(string msg)
+		void	message(string s)
 		{
 			if (globals.verbosity == 3)
-				writeln("MSG: ", msg);
-			log.writeln("MSG: ", logTime, " -- ", msg);
+				writeln(msgString, s);
+			log.writeln("MSG: ", logTime, " -- ", s);
 			log.flush();
 		}
 
-		void	error(string msg)
+		void	error(string s)
 		{
 			if (globals.verbosity >= 2)
-				writeln("ERR: ", msg);
-			log.writeln("ERR: ", logTime, " -- ", msg);
+				writeln(errString, s);
+			log.writeln("ERR: ", logTime, " -- ", s);
 			log.flush();
 		}
 
-		void	net(string	msg)
+		void	net(string	s)
 		{
 			if (globals.verbosity >= 1)
-				writeln("NET: ", msg);
-			log.writeln("NET: ", logTime, " -- ", msg);
+				writeln(netString, s);
+			log.writeln("NET: ", logTime, " -- ", s);
 			log.flush();
 		}
 
-		void	print(string msg)
+		void	print(string s)
 		{
-			writeln(msg);
-			log.writeln("MSG: ", logTime, " -- ", msg);
+			writeln(s);
+			log.writeln("MSG: ", logTime, " -- ", s);
 			log.flush();
 		}
 	}
@@ -69,6 +84,8 @@ class jobLog
 	string	logPath;
 	string	jobName;
 	int		procNr;
+	string	msgString;
+	string	errString;
 
 	this(string name, int nr)
 	{
@@ -77,28 +94,38 @@ class jobLog
 		logPath = globals.logDirectory ~ "/jobs/" ~ jobName ~ "/" ~ to!string(procNr) ~ "/";
 		mkdirRecurse(logPath);
 		log = File(logPath ~ fileTime() ~ ".log", "a");
+		if (colorTerm)
+		{
+			msgString = "\033[33mMSG:\033[39m ";
+			errString = "\033[31mERR:\033[39m ";
+		}
+		else
+		{
+			msgString = "MSG: ";
+			errString = "ERR: ";
+		}
 	}
 
-	void	message(string msg)
+	void	message(string s)
 	{
 		if (globals.verbosity == 3)
-			writeln("MSG: ", jobName, ":", procNr, " - ", msg);
-		log.writeln("MSG: ", logTime, " -- ", msg);
+			writeln(msgString, jobName, ":", procNr, " - ", s);
+		log.writeln("MSG: ", logTime, " -- ", s);
 		log.flush();
 	}
 
-	void	error(string msg)
+	void	error(string s)
 	{
 		if (globals.verbosity >= 2)
-			writeln("ERR: ", jobName, ":", procNr, " - ", msg);
-		log.writeln("ERR: ", logTime, " -- ", msg);
+			writeln(errString, jobName, ":", procNr, " - ", s);
+		log.writeln("ERR: ", logTime, " -- ", s);
 		log.flush();
 	}
 
-	void	print(string msg)
+	void	print(string s)
 	{
-		writeln("MSG: ", jobName, ":", procNr, " - ", msg);
-		log.writeln("NET: ", logTime, " -- ", msg);
+		writeln(msgString, jobName, ":", procNr, " - ", s);
+		log.writeln("MSG: ", logTime, " -- ", s);
 		log.flush();
 	}
 }

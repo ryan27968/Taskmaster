@@ -1,4 +1,4 @@
-//	Global variables.
+//	Global struct.
 struct globalStruct
 {
 	ushort	port = 0;
@@ -11,5 +11,8 @@ struct globalStruct
 globalStruct	globals;
 globalStruct	defaults = {7777, 0, 2, "./config", "./log"};
 
-//	Constants
+//	Settings
 string		configFile = "config.json";
+
+//	Variables
+bool		colorTerm = false;

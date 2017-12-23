@@ -16,6 +16,8 @@ void main()
 //	File	log = File("./log/taskmasterd_2017-12-23_20:13:17.log", "a");
 	if (Runtime.args.length == 2)
 		configFile = Runtime.args[1];
+	if (environment.get("TERM").toLower.indexOf("color") != -1)
+		colorTerm = true;
 	config.readFile();
 	tmdLog.init();
 	tmdLog.print("Taskmasterd started.");
@@ -30,7 +32,8 @@ void main()
 	server.blocking(0);
 	Socket client;
 	char[1024] buffer;
-	while(true) {
+	while(true)
+	{
 		if (client is null || !client.isAlive)
 			try
 			{
@@ -51,10 +54,8 @@ void main()
 				//Do something with incoming command.
 				write(buffer[0.. received]);
 		}
-		//Do continuous stuff.
+		//	Watchdog
 		foreach(job; jobs.jobs)
-		{
 			job.watchdog();
-		}
 	}
 }
