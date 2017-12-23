@@ -201,7 +201,7 @@ class job
 	{
 		int count = 0;
 		foreach (process; processes)
-			count += process.isAlive;
+			count += (process.status == process.Status.alive);
 		return (count);
 	}
 
