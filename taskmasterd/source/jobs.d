@@ -4,6 +4,8 @@ import std.conv;
 import std.typecons;
 import std.datetime;
 
+import logging;
+
 extern (C) ushort umask(ushort umask);
 
 struct envVar
@@ -14,6 +16,7 @@ struct envVar
 
 struct jobDataStr
 {
+	string			name;
 	string			cmd;
 	int				procNr;
 	bool			autoStart;
@@ -42,6 +45,7 @@ class job
 		Status		status = Status.stopped;
 		File		stdout;
 		File		stdin;
+		jobLog		log;
 
 		enum	Status
 		{
@@ -56,6 +60,7 @@ class job
 		{
 			procNr = procNrIn;
 			restartTimes = data.restartTimes;
+			log = new jobLog(data.name, procNr);
 		}
 
 		void	start(bool restart = false)
@@ -63,16 +68,16 @@ class job
 			if (!restart)
 			{
 				restartTimes = data.restartTimes;
-				writeln("Starting...");
+				log.message("Starting.");
 			}
 			else
 			{
 				--restartTimes;
-				writeln("Restarting...");
+				log.message("Restarting.");
 			}
 			status = Status.starting;
-			stdout = File(data.dir ~ to!string(procNr) ~ "_" ~ data.stdout, "a");
-			stderr = File(data.dir ~ to!string(procNr) ~ "_" ~ data.stderr, "a");
+			stdout = File(data.dir ~ "/" ~ to!string(procNr) ~ "_" ~ data.stdout, "a");
+			stderr = File(data.dir ~ "/" ~ to!string(procNr) ~ "_" ~ data.stderr, "a");
 			umask(umaskVal);
 			processID = spawnShell("exec " ~ data.cmd, std.stdio.stdin, stdout,
 			stderr, envVars, Config.none, data.dir, nativeShell);
@@ -83,7 +88,7 @@ class job
 		void	stop()
 		{
 			status = Status.stopping;
-			writeln("Stopping...");
+			log.message("Stopping.");
 			std.process.kill(processID, data.stopSig);
 			stopTimer.start;
 		}
@@ -91,7 +96,7 @@ class job
 		void	kill()
 		{
 			status = Status.stopping;
-			writeln("Killing...");
+			log.message("Killing.");
 			std.process.kill(processID);
 		}
 
@@ -111,12 +116,12 @@ class job
 			{
 				if (isAlive)
 				{
-					writeln("Successfully started");
+					log.message("Successfully started.");
 					status = Status.alive;
 				}
 				else
 				{
-					writeln("Failed to start: Exited too soon.");
+					log.error("Failed to start: Exited too soon.");
 					status = Status.unexpectedStop;
 				}
 			}
@@ -125,14 +130,14 @@ class job
 			{
 				if (isAlive && stopTimer.peek.seconds >= data.stopTime)
 				{
-					writeln("Didn't stop in time.");
+					log.error("Failed to stop: Didn't stop in time.");
 					stopTimer.stop();
 					stopTimer.reset();
 					kill();
 				}
 				else if (!isAlive)
 				{
-					writeln("Successfully stopped.");
+					log.message("Successfully stopped.");
 					stopTimer.stop();
 					stopTimer.reset();
 					status = Status.stopped;
@@ -144,12 +149,12 @@ class job
 				uptime.stop();
 				if (exitCode == data.normalExitCode)
 				{
-					writeln("Process stopped...");
+					log.message("Process stopped.");
 					status = Status.stopped;
 				}
 				else
 				{
-					writeln("Unexpected stop!");
+					log.error("Process stopped unexpectedly!");
 					status = Status.unexpectedStop;
 				}
 			}
