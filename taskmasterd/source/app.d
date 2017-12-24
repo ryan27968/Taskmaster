@@ -38,6 +38,7 @@ void main()
 			try
 			{
 				client = server.accept();
+				client.blocking(0);
 				tmdLog.net("Client \"" ~ client.hostName ~ "\" connected on port " ~ to!string(globals.port) ~ ".");
 			}
 			catch (SocketAcceptException e){}
@@ -50,7 +51,7 @@ void main()
 				client.shutdown(SocketShutdown.BOTH);
 				client.close();
 			}
-			else
+			else if (received > 0)
 				//Do something with incoming command.
 				write(buffer[0.. received]);
 		}
