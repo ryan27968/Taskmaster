@@ -159,12 +159,12 @@ class job
 				}
 			}
 
-			else if (status == Status.stopped && data.restart == 2 && restartTimes)
+			else if (status == Status.stopped && data.restart == 2 && restartTimes != 0)
 			{
 				start(true);
 			}
 
-			else if (status == Status.unexpectedStop && data.restart >= 1 && restartTimes)
+			else if (status == Status.unexpectedStop && data.restart >= 1 && restartTimes != 0)
 			{
 				start(true);
 			}
