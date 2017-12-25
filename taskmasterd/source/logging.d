@@ -8,12 +8,18 @@ import global;
 
 private string	fileTime()
 {
-	return (Clock.currTime.toISOExtString.split(".")[0].replace("T", "__").replace(":", "."));
+	try
+		return (Clock.currTime.toISOExtString.split(".")[0].replace("T", "__").replace(":", "."));
+	catch {}
+	return ("TIME_FETCH_ERR");
 }
 
 private string	logTime()
 {
-	return (Clock.currTime.toISOExtString.split(".")[0].replace("T", " "));
+	try
+		return (Clock.currTime.toISOExtString.split(".")[0].replace("T", " "));
+	catch {}
+	return ("TIME_FETCH_ERR");
 }
 
 class tmdLog
