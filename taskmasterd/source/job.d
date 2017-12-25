@@ -17,6 +17,8 @@ struct envVar
 struct jobDataStr
 {
 	string			name;
+	string			filename;
+
 	string			cmd;
 	int				procNr;
 	bool			autoStart;
@@ -53,7 +55,8 @@ class job
 			alive,
 			stopping,
 			stopped,
-			unexpectedStop
+			goodStop,
+			badStop
 		}
 
 		this(int procNrIn)
@@ -105,6 +108,21 @@ class job
 			return (!tryWait(processID).terminated);
 		}
 
+		bool	stopped()
+		{
+			switch (status)
+			{
+				case Status.stopped:
+				case Status.goodStop:
+				case Status.badStop:
+					return (true);
+					break;
+				default:
+					return (false);
+					break;
+			}
+		}
+
 		int		exitCode()
 		{
 			return (tryWait(processID).status);
@@ -122,7 +140,7 @@ class job
 				else
 				{
 					log.error("Failed to start: Exited too soon.");
-					status = Status.unexpectedStop;
+					status = Status.badStop;
 				}
 			}
 
@@ -150,21 +168,21 @@ class job
 				if (exitCode == data.normalExitCode)
 				{
 					log.message("Process stopped.");
-					status = Status.stopped;
+					status = Status.goodStop;
 				}
 				else
 				{
 					log.error("Process stopped unexpectedly!");
-					status = Status.unexpectedStop;
+					status = Status.badStop;
 				}
 			}
 
-			else if (status == Status.stopped && data.restart == 2 && restartTimes != 0)
+			else if (status == Status.goodStop && data.restart == 2 && restartTimes != 0)
 			{
 				start(true);
 			}
 
-			else if (status == Status.unexpectedStop && data.restart >= 1 && restartTimes != 0)
+			else if (status == Status.badStop && data.restart >= 1 && restartTimes != 0)
 			{
 				start(true);
 			}
@@ -175,6 +193,7 @@ class job
 	ushort			umaskVal;
 	process[]		processes;
 	string[string]	envVars;
+	bool			running;
 
 	this(jobDataStr dataIn)
 	{
@@ -192,14 +211,30 @@ class job
 
 	void	start()
 	{
+		running = true;
 		foreach (process; processes)
 			process.start();
 	}
 
 	void	stop()
 	{
+		running = false;
 		foreach (process; processes)
-			process.stop();
+			if (process.isAlive())
+				process.stop();
+	}
+
+	void	kill()
+	{
+		running = false;
+		foreach (process; processes)
+			process.kill();
+	}
+
+	void	repair()
+	{
+		foreach (process; processes)
+			process.restartTimes = data.restartTimes + 1;
 	}
 
 	int		aliveCount()
@@ -207,6 +242,14 @@ class job
 		int count = 0;
 		foreach (process; processes)
 			count += (process.status == process.Status.alive);
+		return (count);
+	}
+
+	int		stoppedCount()
+	{
+		int count = 0;
+		foreach (process; processes)
+			count += (process.stopped());
 		return (count);
 	}
 
