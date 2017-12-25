@@ -13,7 +13,6 @@ void main()
 {
 	if (Runtime.args.length == 2)
 		configFile = Runtime.args[1];
-	colorTerm = true;
 	config.readFile();
 	tmdLog.init();
 	tmdLog.print("Taskmasterd started.");
