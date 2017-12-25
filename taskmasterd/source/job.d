@@ -213,14 +213,15 @@ class job
 	{
 		running = true;
 		foreach (process; processes)
-			process.start();
+			if (process.stopped)
+				process.start();
 	}
 
 	void	stop()
 	{
 		running = false;
 		foreach (process; processes)
-			if (process.isAlive())
+			if (!process.stopped)
 				process.stop();
 	}
 
@@ -228,7 +229,8 @@ class job
 	{
 		running = false;
 		foreach (process; processes)
-			process.kill();
+			if (!process.stopped)
+				process.kill();
 	}
 
 	void	repair()
