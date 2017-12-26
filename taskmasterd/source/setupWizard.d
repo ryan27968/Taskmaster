@@ -70,38 +70,31 @@ void	setupWizard()
 	}
 	end = false;
 
-	//Echo Commands:
-	while (!end)
+	//Verbosity:
+	while(!end)
 	{
-		if (defaults.echoCommands == 1)
-			std.stdio.write("\nDo you want to echo all received commands?\n[Yes] ");
-		else
-			std.stdio.write("\nDo you want to echo all received commands?\n[No] ");
-		tempStr = toLower(readln().strip);
-		switch (tempStr)
+		std.stdio.write("\nWhat verbosity level do you want? ('?' for help)\n[", defaults.verbosity, "] ");
+		tempStr = readln().strip;
+		if (tempStr.length == 0)
 		{
-			case "":
-			tempStruct.echoCommands = defaults.echoCommands;
-				end = true;
-				break;
-			case "t":
-			case "true":
-			case "y":
-			case "yes":
-				tempStruct.echoCommands = 1;
-				end = true;
-				break;
-			case "f":
-			case "false":
-			case "n":
-			case "no":
-				tempStruct.echoCommands = 0;
-				end = true;
-				break;
-			default:
-				std.stdio.write("Please enter yes or no.\n");
-				break;
+			tempStruct.verbosity = defaults.verbosity;
+			end = true;
 		}
+		else if (tempStr == "?")
+		{
+			std.stdio.write("\n0:	No output.\n",
+			"1:	Connection alerts.\n",
+			"2:	Connection alerts and errors.\n",
+			"3.	All messages.\n");
+		}
+		else if (isNumeric(tempStr) && (tempNum = to!ushort(tempStr)) >= 0 && tempNum <= 3)
+		{
+			tempStruct.verbosity = tempNum;
+			end = true;
+		}
+		else
+			std.stdio.write("\"", tempStr, "\" is not a valid verbosity level. \n",
+			"Please enter a number between 0 and 3.\n");
 	}
 	end = false;
 

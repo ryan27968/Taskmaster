@@ -42,6 +42,7 @@ void	parseFile(string filename)
 	name = chomp(filename, ".tm.json");
 	name = chompPrefix(name, globals.configDirectory);
 	name = name[1 .. name.length];
+	tempJob.name = name;
 	jobs.jobs[name] = new job(tempJob);
 }
 
