@@ -1,45 +1,30 @@
-import std.stdio;
-import std.socket;
-import core.runtime;
+import	std.string;
+import	core.runtime;
+import	std.stdio;
 
-import config;
-import global;
-import parse;
-import jsonx;
+import	config;
+import	global;
+import	parse;
+import	job;
+import	logging;
+import	tcp;
 
 void main()
 {
 	if (Runtime.args.length == 2)
 		configFile = Runtime.args[1];
-	readFile();
+	colorTerm = true;
+	config.readFile();
+	tmdLog.init();
+	tmdLog.print("Taskmasterd started.");
 	parseDir();
-	Socket server = new TcpSocket();
-	server.setOption(SocketOptionLevel.SOCKET, SocketOption.REUSEADDR, true);
-	if (globals.remoteConnections)
-		server.bind(new InternetAddress(globals.port));
-	else
-		server.bind(new InternetAddress("127.0.0.1", globals.port));
-	server.listen(1);
-	server.blocking(0);
-	Socket client;
-	char[1024] buffer;
-	while(true) {
-		if (client is null || !client.isAlive)
-			try
-				client = server.accept();
-			catch (SocketAcceptException e){}
-		else
-		{
-			auto received = client.receive(buffer);
-			if (received == 0)
-			{
-				client.shutdown(SocketShutdown.BOTH);
-				client.close();
-			}
-			else
-				//Do something with incoming command.
-				write(buffer[0.. received]);
-		}
-		//Do continuous stuff.
+	tcp.init();
+	while (1)
+	{
+		//	Monitor TCP events.
+		tcp.process();
+		//	Tend to processes.
+		foreach(j; jobs)
+			j.watchdog();
 	}
 }

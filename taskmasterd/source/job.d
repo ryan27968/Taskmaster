@@ -4,6 +4,8 @@ import std.conv;
 import std.typecons;
 import std.datetime;
 
+import logging;
+
 extern (C) ushort umask(ushort umask);
 
 struct envVar
@@ -14,6 +16,9 @@ struct envVar
 
 struct jobDataStr
 {
+	string			name;
+	string			filename;
+
 	string			cmd;
 	int				procNr;
 	bool			autoStart;
@@ -42,6 +47,7 @@ class job
 		Status		status = Status.stopped;
 		File		stdout;
 		File		stdin;
+		jobLog		log;
 
 		enum	Status
 		{
@@ -49,13 +55,15 @@ class job
 			alive,
 			stopping,
 			stopped,
-			unexpectedStop
+			goodStop,
+			badStop
 		}
 
 		this(int procNrIn)
 		{
 			procNr = procNrIn;
 			restartTimes = data.restartTimes;
+			log = new jobLog(data.name, procNr);
 		}
 
 		void	start(bool restart = false)
@@ -63,16 +71,16 @@ class job
 			if (!restart)
 			{
 				restartTimes = data.restartTimes;
-				writeln("Starting...");
+				log.message("Starting.");
 			}
 			else
 			{
 				--restartTimes;
-				writeln("Restarting...");
+				log.message("Restarting.");
 			}
 			status = Status.starting;
-			stdout = File(data.dir ~ to!string(procNr) ~ "_" ~ data.stdout, "a");
-			stderr = File(data.dir ~ to!string(procNr) ~ "_" ~ data.stderr, "a");
+			stdout = File(data.dir ~ "/" ~ to!string(procNr) ~ "_" ~ data.stdout, "a");
+			stderr = File(data.dir ~ "/" ~ to!string(procNr) ~ "_" ~ data.stderr, "a");
 			umask(umaskVal);
 			processID = spawnShell("exec " ~ data.cmd, std.stdio.stdin, stdout,
 			stderr, envVars, Config.none, data.dir, nativeShell);
@@ -83,7 +91,7 @@ class job
 		void	stop()
 		{
 			status = Status.stopping;
-			writeln("Stopping...");
+			log.message("Stopping.");
 			std.process.kill(processID, data.stopSig);
 			stopTimer.start;
 		}
@@ -91,13 +99,28 @@ class job
 		void	kill()
 		{
 			status = Status.stopping;
-			writeln("Killing...");
+			log.message("Killing.");
 			std.process.kill(processID);
 		}
 
 		bool	isAlive()
 		{
 			return (!tryWait(processID).terminated);
+		}
+
+		bool	stopped()
+		{
+			switch (status)
+			{
+				case Status.stopped:
+				case Status.goodStop:
+				case Status.badStop:
+					return (true);
+					break;
+				default:
+					return (false);
+					break;
+			}
 		}
 
 		int		exitCode()
@@ -111,13 +134,13 @@ class job
 			{
 				if (isAlive)
 				{
-					writeln("Successfully started");
+					log.message("Successfully started.");
 					status = Status.alive;
 				}
 				else
 				{
-					writeln("Failed to start: Exited too soon.");
-					status = Status.unexpectedStop;
+					log.error("Failed to start: Exited too soon.");
+					status = Status.badStop;
 				}
 			}
 
@@ -125,14 +148,14 @@ class job
 			{
 				if (isAlive && stopTimer.peek.seconds >= data.stopTime)
 				{
-					writeln("Didn't stop in time.");
+					log.error("Failed to stop: Didn't stop in time.");
 					stopTimer.stop();
 					stopTimer.reset();
 					kill();
 				}
 				else if (!isAlive)
 				{
-					writeln("Successfully stopped.");
+					log.message("Successfully stopped.");
 					stopTimer.stop();
 					stopTimer.reset();
 					status = Status.stopped;
@@ -144,22 +167,22 @@ class job
 				uptime.stop();
 				if (exitCode == data.normalExitCode)
 				{
-					writeln("Process stopped...");
-					status = Status.stopped;
+					log.message("Process stopped.");
+					status = Status.goodStop;
 				}
 				else
 				{
-					writeln("Unexpected stop!");
-					status = Status.unexpectedStop;
+					log.error("Process stopped unexpectedly!");
+					status = Status.badStop;
 				}
 			}
 
-			else if (status == Status.stopped && data.restart == 2 && restartTimes)
+			else if (status == Status.goodStop && data.restart == 2 && restartTimes != 0)
 			{
 				start(true);
 			}
 
-			else if (status == Status.unexpectedStop && data.restart >= 1 && restartTimes)
+			else if (status == Status.badStop && data.restart >= 1 && restartTimes != 0)
 			{
 				start(true);
 			}
@@ -170,6 +193,7 @@ class job
 	ushort			umaskVal;
 	process[]		processes;
 	string[string]	envVars;
+	bool			running;
 
 	this(jobDataStr dataIn)
 	{
@@ -187,14 +211,30 @@ class job
 
 	void	start()
 	{
+		running = true;
 		foreach (process; processes)
 			process.start();
 	}
 
 	void	stop()
 	{
+		running = false;
 		foreach (process; processes)
-			process.stop();
+			if (process.isAlive())
+				process.stop();
+	}
+
+	void	kill()
+	{
+		running = false;
+		foreach (process; processes)
+			process.kill();
+	}
+
+	void	repair()
+	{
+		foreach (process; processes)
+			process.restartTimes = data.restartTimes + 1;
 	}
 
 	int		aliveCount()
@@ -202,6 +242,14 @@ class job
 		int count = 0;
 		foreach (process; processes)
 			count += (process.status == process.Status.alive);
+		return (count);
+	}
+
+	int		stoppedCount()
+	{
+		int count = 0;
+		foreach (process; processes)
+			count += (process.stopped());
 		return (count);
 	}
 

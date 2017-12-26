@@ -4,7 +4,7 @@ import std.string;
 
 import global;
 import jsonx;
-import jobs;
+import job;
 
 void	parseFile(string filename)
 {
@@ -42,7 +42,9 @@ void	parseFile(string filename)
 	name = chomp(filename, ".tm.json");
 	name = chompPrefix(name, globals.configDirectory);
 	name = name[1 .. name.length];
-	jobs.jobs[name] = new job(tempJob);
+	tempJob.name = name;
+	tempJob.filename = filename;
+	jobs[name] = new job(tempJob);
 }
 
 void	parseDir()
