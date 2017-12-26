@@ -10,16 +10,16 @@ private string	fileTime()
 {
 	try
 		return (Clock.currTime.toISOExtString.split(".")[0].replace("T", "__").replace(":", "."));
-	catch {}
-	return ("TIME_FETCH_ERR");
+	catch
+		return ("TIME_FETCH_ERR");
 }
 
 private string	logTime()
 {
 	try
 		return (Clock.currTime.toISOExtString.split(".")[0].replace("T", " "));
-	catch {}
-	return ("TIME_FETCH_ERR");
+	catch
+		return ("TIME_FETCH_ERR");
 }
 
 class tmdLog
