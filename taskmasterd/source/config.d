@@ -10,13 +10,9 @@ void	write()
 	string	json = jsonEncode(globals);
 
 	try
-	{
 		std.file.write(configFile, json);
-	}
 	catch (FileException error)
-	{
 		std.stdio.writeln("File writing error: ", error);
-	}
 }
 
 void	set(globalStruct config)
