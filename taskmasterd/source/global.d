@@ -12,4 +12,4 @@ globalStruct	globals;
 globalStruct	defaults = {7777, 0, 1, "./config", "./log"};
 
 //	Constants
-const string		configFile = "config.json";
+string		configFile = "config.json";

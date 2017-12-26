@@ -1,11 +1,18 @@
 import std.stdio;
 import std.socket;
+import core.runtime;
+
 import config;
 import global;
+import parse;
+import jsonx;
 
 void main()
 {
+	if (Runtime.args.length == 2)
+		configFile = Runtime.args[1];
 	readFile();
+	parseDir();
 	Socket server = new TcpSocket();
 	server.setOption(SocketOptionLevel.SOCKET, SocketOption.REUSEADDR, true);
 	if (globals.remoteConnections)

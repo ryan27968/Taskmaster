@@ -20,7 +20,7 @@ void	parseFile(string filename)
 		||	indexOf(fileText, "\"autoStart\":") == -1
 		||	indexOf(fileText, "\"restart\":") == -1
 		||	indexOf(fileText, "\"startTime\":") == -1
-		||	indexOf(fileText, "\"normalExitSig\":") == -1
+		||	indexOf(fileText, "\"normalExitCode\":") == -1
 		||	indexOf(fileText, "\"restartTimes\":") == -1
 		||	indexOf(fileText, "\"stopSig\":") == -1
 		||	indexOf(fileText, "\"stopTime\":") == -1
@@ -42,8 +42,7 @@ void	parseFile(string filename)
 	name = chomp(filename, ".tm.json");
 	name = chompPrefix(name, globals.configDirectory);
 	name = name[1 .. name.length];
-	jobs.jobs[name] = new job;
-	jobs.jobs[name].data = tempJob;
+	jobs.jobs[name] = new job(tempJob);
 }
 
 void	parseDir()
