@@ -9,10 +9,18 @@ import	job;
 import	logging;
 import	tcp;
 
+extern(C) void signal(int sig, void function(int));
+
+extern(C) void handle(int sig)
+{
+	parseDir();
+}
+
 void main()
 {
 	if (Runtime.args.length == 2)
 		configFile = Runtime.args[1];
+	signal(1, &handle);
 	config.readFile();
 	tmdLog.init();
 	tmdLog.print("Taskmasterd started.");
