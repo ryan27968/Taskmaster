@@ -243,6 +243,7 @@ class job
 			envVars[e.name] = e.value;
 		for (int i = 0; i < data.procNr; ++i)
 			processes[i] = new process(i);
+		logMessage("Job loaded.");
 		if (data.autoStart)
 			start();
 	}
@@ -297,6 +298,12 @@ class job
 	{
 		foreach (process; processes)
 			process.watchdog;
+	}
+
+	void	logMessage(string m)
+	{
+		foreach (p; processes)
+			p.log.message(m);
 	}
 }
 

@@ -23,6 +23,7 @@ void	parseFile(string filename)
 		jobs[name].stop();
 		while (jobs[name].stoppedCount < jobs[name].data.procNr)
 			jobs[name].watchdog();
+		jobs[name].logMessage("Job deleted.");
 		jobs.remove(name);
 		return ;
 	}
@@ -71,11 +72,10 @@ void	parseFile(string filename)
 	tempJob.filename = filename;
 	if (name in jobs && jobs[name].data != tempJob)
 	{
-		writeln(jobs[name].data);
-		writeln(tempJob);
 		jobs[name].stop();
 		while (jobs[name].stoppedCount < jobs[name].data.procNr)
 			jobs[name].watchdog();
+		jobs[name].logMessage("Reloading job. See new log file.");
 		jobs.remove(name);
 	}
 	if (name !in jobs)
