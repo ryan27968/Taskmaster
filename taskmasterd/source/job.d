@@ -21,6 +21,7 @@ struct jobDataStr
 	string			filename;
 
 	string			cmd;
+	string			runas;
 	int				procNr;
 	bool			autoStart;
 	byte			restart;
@@ -96,7 +97,7 @@ class job
 			}
 			umask(umaskVal);
 			try
-				processID = spawnShell("exec " ~ data.cmd, std.stdio.stdin,
+				processID = spawnShell(execStr, std.stdio.stdin,
 				stdout, stderr, envVars, Config.none, data.dir, nativeShell);
 			catch (ProcessException e)
 			{
@@ -232,6 +233,7 @@ class job
 	process[]		processes;
 	string[string]	envVars;
 	bool			running;
+	string			execStr;
 
 	this(jobDataStr dataIn)
 	{
@@ -243,6 +245,10 @@ class job
 			envVars[e.name] = e.value;
 		for (int i = 0; i < data.procNr; ++i)
 			processes[i] = new process(i);
+		if (data.runas == "")
+			execStr = "exec " ~ data.cmd;
+		else
+			execStr = "exec su " ~ data.runas ~ " -c \"" ~ data.cmd ~ "\"";
 		logMessage("Job loaded.");
 		if (data.autoStart)
 			start();
