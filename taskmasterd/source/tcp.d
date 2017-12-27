@@ -217,7 +217,7 @@ private	string	parseCommand(string m)
 					break;
 			}
 	}
-	catch
+	catch (Throwable)
 		tmdLog.net("Invalid query: \"" ~ m ~ "\"");
 	return (jsonEncode(response));
 }

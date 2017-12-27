@@ -40,7 +40,7 @@ void	readFile()
 				return ;
 			}
 		}
-		catch {}
+		catch (Throwable){}
 		writeln("\"", configFile, "\" incomplete/invalid. Running setup wizard.");
 	}
 	else

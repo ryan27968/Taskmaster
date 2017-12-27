@@ -10,7 +10,7 @@ private string	fileTime()
 {
 	try
 		return (Clock.currTime.toISOExtString.split(".")[0].replace("T", "__").replace(":", "."));
-	catch
+	catch (Throwable)
 		return ("TIME_FETCH_ERR");
 }
 
@@ -18,7 +18,7 @@ private string	logTime()
 {
 	try
 		return (Clock.currTime.toISOExtString.split(".")[0].replace("T", " "));
-	catch
+	catch (Throwable)
 		return ("TIME_FETCH_ERR");
 }
 
