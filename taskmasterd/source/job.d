@@ -237,7 +237,7 @@ class job
 	{
 		data = dataIn;
 		processes.length = data.procNr;
-		umaskVal = parse!ushort(data.umask, 8);
+		umaskVal = to!ushort(data.umask, 8);
 
 		foreach (e; data.env)
 			envVars[e.name] = e.value;

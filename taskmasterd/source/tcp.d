@@ -190,24 +190,11 @@ private	string	parseCommand(string m)
 					break;
 				case "reload":
 					tmdLog.net("Received reload command for job \"" ~ to!string(job) ~ "\".");
-					if (jobs[job].running)
-						jobs[job].stop();
-					while (jobs[job].stoppedCount < jobs[job].data.procNr)
-						jobs[job].watchdog();
 					parseFile(jobs[job].data.filename);
 					response.response = "success";
 					break;
 				case "restart":
 					tmdLog.net("Received restart command.");
-					foreach (j; jobs)
-					{
-						if (j.running)
-						{
-							j.stop();
-							while (j.stoppedCount < j.data.procNr)
-								j.watchdog();
-						}
-					}
 					parseDir();
 					response.response = "success";
 					break;

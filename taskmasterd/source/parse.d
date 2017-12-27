@@ -14,6 +14,19 @@ void	parseFile(string filename)
 	string fileText;
 	jobDataStr tempJob;
 
+	name = chomp(filename, ".tm.json");
+	name = chompPrefix(name, globals.configDirectory);
+	name = name[1 .. name.length];
+
+	if (!exists(filename) && name in jobs)
+	{
+		jobs[name].stop();
+		while (jobs[name].stoppedCount < jobs[name].data.procNr)
+			jobs[name].watchdog();
+		jobs.remove(name);
+		return ;
+	}
+
 	try
 		fileText = readText(filename);
 	catch (FileException e)
@@ -54,12 +67,19 @@ void	parseFile(string filename)
 		stderr.writeln("\"", filename, "\" invalid!");
 		return ;
 	}
-	name = chomp(filename, ".tm.json");
-	name = chompPrefix(name, globals.configDirectory);
-	name = name[1 .. name.length];
 	tempJob.name = name;
 	tempJob.filename = filename;
-	jobs[name] = new job(tempJob);
+	if (name in jobs && jobs[name].data != tempJob)
+	{
+		writeln(jobs[name].data);
+		writeln(tempJob);
+		jobs[name].stop();
+		while (jobs[name].stoppedCount < jobs[name].data.procNr)
+			jobs[name].watchdog();
+		jobs.remove(name);
+	}
+	if (name !in jobs)
+		jobs[name] = new job(tempJob);
 }
 
 void	parseDir()
