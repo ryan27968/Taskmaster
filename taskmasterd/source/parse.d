@@ -2,6 +2,7 @@ import std.file;
 import std.stdio;
 import std.string;
 import std.utf;
+import std.conv;
 
 import global;
 import jsonx;
@@ -70,6 +71,13 @@ void	parseFile(string filename)
 	}
 	tempJob.name = name;
 	tempJob.filename = filename;
+	try
+		validateJob(tempJob);
+	catch (jobException e)
+	{
+		tmdLog.print("File \"" ~ filename ~ "\" invalid.");
+		return ;
+	}
 	if (name in jobs && jobs[name].data != tempJob)
 	{
 		jobs[name].stop();
@@ -90,4 +98,27 @@ void	parseDir()
 		if (entry.isFile)
 			parseFile(entry.name);
 	}
+}
+
+void	validateJob(jobDataStr job)
+{
+	if (job.cmd == ""
+	||	job.procNr < 1
+	||	job.restart < 0
+	||	job.restart > 2
+	||	job.startTime < 1
+	||	job.stopTime < 1
+	||	job.stdout == ""
+	||	job.stderr == ""
+	||	to!ushort(job.umask, 8) > octal!777
+	||	to!ushort(job.umask, 8) < octal!0)
+		throw new jobException("");
+}
+
+class jobException : Exception
+{
+    this(string msg)
+	{
+        super(msg);
+    }
 }
