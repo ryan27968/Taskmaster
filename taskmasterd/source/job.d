@@ -1,10 +1,11 @@
-import std.process;
-import std.stdio;
-import std.conv;
-import std.typecons;
-import std.datetime;
+import	std.process;
+import	std.stdio;
+import	std.conv;
+import	std.typecons;
+import	std.datetime;
+import	std.exception;
 
-import logging;
+import	logging;
 
 extern (C) ushort umask(ushort umask);
 
@@ -79,11 +80,29 @@ class job
 				log.message("Restarting.");
 			}
 			status = Status.starting;
-			stdout = File(data.dir ~ "/" ~ to!string(procNr) ~ "_" ~ data.stdout, "a");
-			stderr = File(data.dir ~ "/" ~ to!string(procNr) ~ "_" ~ data.stderr, "a");
+			try
+				stdout = File(data.dir ~ "/" ~ to!string(procNr) ~ "_" ~ data.stdout, "a");
+			catch (ErrnoException e)
+			{
+				log.error("Failed to open stdout file: " ~ e.msg);
+				return ;
+			}
+			try
+				stderr = File(data.dir ~ "/" ~ to!string(procNr) ~ "_" ~ data.stderr, "a");
+			catch (ErrnoException e)
+			{
+				log.error("Failed to open stderr file: " ~ e.msg);
+				return ;
+			}
 			umask(umaskVal);
-			processID = spawnShell("exec " ~ data.cmd, std.stdio.stdin, stdout,
-			stderr, envVars, Config.none, data.dir, nativeShell);
+			try
+				processID = spawnShell("exec " ~ data.cmd, std.stdio.stdin,
+				stdout, stderr, envVars, Config.none, data.dir, nativeShell);
+			catch (ProcessException e)
+			{
+				log.error("Failed to spawn process: " ~ e.msg);
+				return ;
+			}
 			uptime.reset();
 			uptime.start();
 		}
@@ -92,7 +111,15 @@ class job
 		{
 			status = Status.stopping;
 			log.message("Stopping.");
-			std.process.kill(processID, data.stopSig);
+			try
+				std.process.kill(processID, data.stopSig);
+			catch (ProcessException e)
+			{
+				log.error("Failed to stop process: " ~ e.msg);
+				log.message("Attempting to kill process: " ~ e.msg);
+				kill();
+				return ;
+			}
 			stopTimer.start;
 		}
 
@@ -100,12 +127,19 @@ class job
 		{
 			status = Status.stopping;
 			log.message("Killing.");
-			std.process.kill(processID);
+			try
+				std.process.kill(processID);
+			catch (ProcessException e)
+				log.error("Failed to kill process: " ~ e.msg);
 		}
 
 		bool	isAlive()
 		{
-			return (!tryWait(processID).terminated);
+			try
+				return (!tryWait(processID).terminated);
+			catch (ProcessException e)
+				log.error("Failed to get process status: " ~ e.msg);
+			return (false);
 		}
 
 		bool	stopped()
@@ -125,7 +159,11 @@ class job
 
 		int		exitCode()
 		{
-			return (tryWait(processID).status);
+			try
+				return (tryWait(processID).status);
+			catch (ProcessException e)
+				log.error("Failed to get process exit code: " ~ e.msg);
+			return (-1);
 		}
 
 		void	watchdog()
@@ -213,14 +251,15 @@ class job
 	{
 		running = true;
 		foreach (process; processes)
-			process.start();
+			if (process.stopped)
+				process.start();
 	}
 
 	void	stop()
 	{
 		running = false;
 		foreach (process; processes)
-			if (process.isAlive())
+			if (!process.stopped)
 				process.stop();
 	}
 
@@ -228,7 +267,8 @@ class job
 	{
 		running = false;
 		foreach (process; processes)
-			process.kill();
+			if (!process.stopped)
+				process.kill();
 	}
 
 	void	repair()

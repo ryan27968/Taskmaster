@@ -1,16 +1,31 @@
 import std.file;
 import std.stdio;
 import std.string;
+import std.utf;
 
 import global;
 import jsonx;
 import job;
+import logging;
 
 void	parseFile(string filename)
 {
 	string name;
-	string fileText = readText(filename);
+	string fileText;
 	jobDataStr tempJob;
+
+	try
+		fileText = readText(filename);
+	catch (FileException e)
+	{
+		tmdLog.error("File read error: " ~ e.msg);
+		return ;
+	}
+	catch (UTFException e)
+	{
+		tmdLog.error("File encoding error: " ~ e.msg);
+		return ;
+	}
 
 	try
 	{

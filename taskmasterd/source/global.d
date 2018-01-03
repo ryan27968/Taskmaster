@@ -15,4 +15,4 @@ globalStruct	defaults = {7777, 0, 2, "./config", "./log"};
 string		configFile = "config.json";
 
 //	Variables
-bool		colorTerm = false;
+bool		colorTerm = true;

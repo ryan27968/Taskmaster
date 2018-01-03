@@ -10,13 +10,9 @@ void	write()
 	string	json = jsonEncode(globals);
 
 	try
-	{
 		std.file.write(configFile, json);
-	}
 	catch (FileException error)
-	{
 		std.stdio.writeln("File writing error: ", error);
-	}
 }
 
 void	set(globalStruct config)
@@ -30,9 +26,9 @@ void	readFile()
 	if (exists(configFile) && isFile(configFile))
 	{
 		globalStruct fromFile;
-		string fileText = readText(configFile);
 		try
 		{
+			string fileText = readText(configFile);
 			fromFile = jsonDecode!globalStruct(fileText);
 			if (indexOf(fileText, "\"port\":") != -1
 			&&	indexOf(fileText, "\"remoteConnections\":") != -1
@@ -44,7 +40,7 @@ void	readFile()
 				return ;
 			}
 		}
-		catch (jsonx.JsonException e){}
+		catch (Throwable){}
 		writeln("\"", configFile, "\" incomplete/invalid. Running setup wizard.");
 	}
 	else
