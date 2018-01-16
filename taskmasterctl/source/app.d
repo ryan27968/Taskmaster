@@ -1,10 +1,24 @@
-import std.stdio;
+import	std.stdio;
 
-void main()
+import	args;
+import	global;
+import	tcp;
+import	cmd;
+import	error;
+
+void main(string[] args)
 {
-	writeln("Edit source/app.d to start your project.");
-	writeln("Edit source/app.d to start your project.");
-	writeln("Edit source/app.d to start your project.");
-	writeln("Edit source/app.d to start your project.");
-	writeln("Edit source/app.d to start your project.");
+	//	Parse arguments.
+	args = parseArgs(args);
+
+	//	Try to establish connection.
+	tcp.init();
+
+	// //	If in shell mode, open shell. Otherwise run command.
+	if (shellMode)
+		shell();
+	else if (args.length)
+		executeCmd(args);
+	else
+		err("No command?!");
 }
