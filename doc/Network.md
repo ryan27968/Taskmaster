@@ -1,6 +1,6 @@
 #	How do the programs communicate?
 Taskmasterctl and Taskmasterd communicate over a simple TCP socket.
-The communication protocol is simple json.
+The communication language is simple json.
 
 ##	Commands
 The valid commands and their required extra fields are:
@@ -8,7 +8,7 @@ The valid commands and their required extra fields are:
  - `"start"`	<`"job"`>			# Start a job.
  - `"stop"`		<`"job"`>			# Stop a job.
  - `"kill"`		<`"job"`>			# Kill a job.
- - `"repair"`	<`"job"`>			# Repair a job.
+ - `"repair"`	<`"job"`>			# Repair a job (Reset to default state non-destructively).
  - `"status"`	<`"job"`>			# Get status of a job.
  - `"pull"`		<`"job"`>			# Download a job.tm.json file from taskmasterd.
  - `"push"`		<`"job"`, `"data"`>	# Send a job.tm.json file to taskmasterd.
@@ -17,7 +17,7 @@ The valid commands and their required extra fields are:
  - `"reload"`	<`"job"`>			# Reload a job.
  - `"restart"`						# Reload all jobs
 
-In the case of some commands, they will need one or more extra fields.
+In the case of most commands, they will need one or two extra fields.
 For example, when killing a job you will need an extra "job" field in the json query so that taskmasterd knows which job to kill.
 When pushing a job, you will need an extra "data" field containing the contents of the file you are pushing.
 **Note: The `"job"` and `"data"` fields will always be base64 encoded.**
@@ -48,7 +48,7 @@ The responses will be transmitted in a similar manner. The valid responses and t
  - `"fail"`			<`"error"`>	# Command failed.
  - `"invalid"`					# Invalid command.
  - `"status"`		<`"data"`>	# Returning the status of a job.
- - `"redundant"`				# Redundant command (eg. attempting to start a job already started).
+ - `"redundant"`				# Redundant command (eg. attempting to start a job already running).
  - `"file"`			<`"data"`>	# Responding (to a pull query) with a job file.
  - `"list"`			<`"data"`>	# Responding (to a list query) with a json string containing list of job names.
 

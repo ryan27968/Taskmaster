@@ -143,7 +143,7 @@ private	string	parseCommand(string m)
 					else
 					{
 						response.response = "fail";
-						response.error = "\"" ~ to!string(job) ~ "\" not running.";
+						response.error = Base64.encode(cast(ubyte[])("\"" ~ to!string(job) ~ "\" not running."));
 						tmdLog.net("\"" ~ to!string(job) ~ "\" not running.");
 					}
 					break;
@@ -152,7 +152,7 @@ private	string	parseCommand(string m)
 					response.response = "status";
 					if (jobs[job].running)
 						response.data = Base64.encode(cast(ubyte[])("\"" ~ job ~ "\"" ~ " running. " ~
-						to!string(jobs[job].aliveCount) ~ " of " ~ to!string(jobs[job].data.procNr) ~ " processes running."));
+						to!string(jobs[job].aliveCount) ~ " of " ~ to!string(jobs[job].data.procNr) ~ " processes alive."));
 					else
 						response.data = Base64.encode(cast(ubyte[])("\"" ~ job ~ "\"" ~ " not running. "));
 					break;
