@@ -12,11 +12,11 @@ void	init()
 	try
 		addresses = getAddress(server, port);
 	catch (Throwable)
-		err("Can't find server:\"" ~ server ~ "\".");
+		fatalErr("Can't find server:\"" ~ server ~ "\".");
 	try
 		connection = new TcpSocket(addresses[0]);
 	catch (Throwable)
-		err("Could not connect to server.\nConnection timed out.");
+		fatalErr("Could not connect to server.\nConnection timed out.");
 }
 
 string	query(string query)
@@ -37,7 +37,7 @@ string	query(string query)
 		{
 			connection.shutdown(SocketShutdown.BOTH);
 			connection.close();
-			err("Connection to server lost.");
+			fatalErr("Connection to server lost.");
 		}
 		else if (received > 0)
 		{

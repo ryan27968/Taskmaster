@@ -5,6 +5,7 @@ import	global;
 import	tcp;
 import	cmd;
 import	error;
+import	shell;
 
 void main(string[] args)
 {
@@ -14,11 +15,11 @@ void main(string[] args)
 	//	Try to establish connection.
 	tcp.init();
 
-	// //	If in shell mode, open shell. Otherwise run command.
+	//	If in shell mode, open shell. Otherwise run command.
 	if (shellMode)
-		shell();
+		shell.shell();
 	else if (args.length)
 		executeCmd(args);
 	else
-		err("No command?!");
+		fatalErr("No command?!");
 }
