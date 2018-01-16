@@ -8,6 +8,7 @@ import	std.utf;
 import	error;
 import	tcp;
 import	jsonx;
+import	global;
 
 struct	Query
 {
@@ -111,6 +112,10 @@ void	executeCmd(string[] cmd)
 					err("Invalid command.");
 				query.cmd = "restart";
 				break;
+			case "exit":
+				if (shellMode)
+					stop();
+				break;
 			default:
 				err("Invalid command.");
 				break;
@@ -162,12 +167,6 @@ void	executeCmd(string[] cmd)
 		writeln("File encoding error!");
 	catch (JsonException)
 		writeln("Json error!");
-}
-
-void	shell()
-{
-	while (1)
-	{
-
-	}
+	catch (ErrException e)
+		writeln(e.msg);
 }
