@@ -281,7 +281,10 @@ class job
 	void	repair()
 	{
 		foreach (process; processes)
+		{
 			process.restartTimes = data.restartTimes + 1;
+			process.start(true);
+		}
 	}
 
 	int		aliveCount()
