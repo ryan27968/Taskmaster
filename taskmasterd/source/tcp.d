@@ -189,7 +189,7 @@ private	string	parseCommand(string m)
 						temp ~= "{\"processes\":[";
 						foreach (j; jobs)
 							temp ~= ("{\"name\":\"" ~ j.data.name ~ "\"},");
-						temp = temp.chop;
+						temp = temp.chomp(",");
 						temp ~= "]}";
 						response.response = "list";
 						response.data = Base64.encode(cast(ubyte[])temp);
