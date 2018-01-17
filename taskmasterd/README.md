@@ -5,3 +5,5 @@ This is the server of the project. It interfaces between the processes themselve
  - [Taskmasterd Configuration](../doc/Taskmasterd%20Config.md)
  - [Job Configuration](../doc/Job%20Config.md)
  - [TCP communication](../doc/Network.md)
+
+For a preconfigured taskmasterd installation example, check out the examples directory.
