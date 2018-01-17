@@ -86,6 +86,7 @@ class job
 			catch (ErrnoException e)
 			{
 				log.error("Failed to open stdout file: " ~ e.msg);
+				status = Status.badStop;
 				return ;
 			}
 			try
@@ -93,6 +94,7 @@ class job
 			catch (ErrnoException e)
 			{
 				log.error("Failed to open stderr file: " ~ e.msg);
+				status = Status.badStop;
 				return ;
 			}
 			umask(umaskVal);
@@ -102,6 +104,7 @@ class job
 			catch (ProcessException e)
 			{
 				log.error("Failed to spawn process: " ~ e.msg);
+				status = Status.badStop;
 				return ;
 			}
 			uptime.reset();
