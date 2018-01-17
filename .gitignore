@@ -1,5 +1,4 @@
 *.o
-*.json
 *.log
 taskmasterd/taskmasterd
 taskmasterctl/taskmasterctl

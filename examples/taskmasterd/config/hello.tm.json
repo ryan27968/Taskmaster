@@ -1,0 +1,18 @@
+{
+	"cmd": "./hello",
+	"runas":"",
+	"procNr": 1,
+	"autoStart": true,
+	"restart": 0,
+	"startTime": 1,
+	"normalExitCode":0,
+	"restartTimes": 3,
+	"stopSig": 15,
+	"stopTime": 1,
+	"stdout": "stdout.txt",
+	"stderr": "stderr.txt",
+	"env":
+	[],
+	"dir": "./hello",
+	"umask": "0111"
+}

@@ -1,0 +1,27 @@
+{
+	"cmd": "printenv",
+	"runas":"",
+	"procNr": 1,
+	"autoStart": false,
+	"restart": 0,
+	"startTime": 1,
+	"normalExitCode":0,
+	"restartTimes": 0,
+	"stopSig": 15,
+	"stopTime": 1,
+	"stdout": "stdout.txt",
+	"stderr": "stderr.txt",
+	"env":
+	[
+		{
+			"name": "TEST",
+			"value": "valueHere"
+		},
+		{
+			"name": "TEST2",
+			"value": "valueHere2"
+		}
+	],
+	"dir": "./env",
+	"umask": "0111"
+}
