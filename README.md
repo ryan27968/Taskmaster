@@ -11,4 +11,4 @@ Taskmaster is a combination of two programs. Taskmasterd manages the programs/jo
  - [Job Configuration](doc/Job%20Config.md)
  - [TCP communication](doc/Network.md)
 
-For a preconfigured taskmasterd installation example, check out the examples branch.
+For a preconfigured taskmasterd installation example, check out the examples directory.
