@@ -28,7 +28,7 @@ void	readFile()
 		globalStruct fromFile;
 		try
 		{
-			string fileText = readText(configFile);
+			string fileText = readText(configFile).strip();
 			fromFile = jsonDecode!globalStruct(fileText);
 			if (indexOf(fileText, "\"port\":") != -1
 			&&	indexOf(fileText, "\"remoteConnections\":") != -1
