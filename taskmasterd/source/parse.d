@@ -30,7 +30,7 @@ void	parseFile(string filename)
 	}
 
 	try
-		fileText = readText(filename);
+		fileText = readText(filename).strip();
 	catch (FileException e)
 	{
 		tmdLog.error("File read error: " ~ e.msg);

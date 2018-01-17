@@ -148,7 +148,7 @@ private	string	parseCommand(string m)
 					}
 					break;
 				case "status":
-					tmdLog.net("Received status command for job \"" ~ to!string(job) ~ "\".");
+					tmdLog.net("Received status query for job \"" ~ to!string(job) ~ "\".");
 					response.response = "status";
 					if (jobs[job].running)
 						response.data = Base64.encode(cast(ubyte[])("\"" ~ job ~ "\"" ~ " running. " ~
@@ -157,7 +157,7 @@ private	string	parseCommand(string m)
 						response.data = Base64.encode(cast(ubyte[])("\"" ~ job ~ "\"" ~ " not running. "));
 					break;
 				case "pull":
-					tmdLog.net("Received pull command for job \"" ~ to!string(job) ~ "\".");
+					tmdLog.net("Received pull query for job \"" ~ to!string(job) ~ "\".");
 					response.response = "file";
 					response.data = Base64.encode(cast(ubyte[])readText(jobs[job].data.filename));
 					break;
@@ -180,6 +180,7 @@ private	string	parseCommand(string m)
 					break;
 				case "list":
 					string	temp;
+					tmdLog.net("Received list query.");
 					temp ~= "{\"processes\":[";
 					foreach (j; jobs)
 						temp ~= ("{\"name\":\"" ~ j.data.name ~ "\"},");
