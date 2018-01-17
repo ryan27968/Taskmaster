@@ -9,12 +9,13 @@ import	job;
 import	logging;
 import	tcp;
 
+bool	reload = false;
+
 extern(C) void signal(int sig, void function(int));
 
 extern(C) void handle(int sig)
 {
-	tmdLog.message("Received SIGHUP. Restarting.");
-	parseDir();
+	reload = true;
 }
 
 void main()
@@ -34,5 +35,12 @@ void main()
 		//	Tend to processes.
 		foreach(j; jobs)
 			j.watchdog();
+		//	Reload on SIGHUP.
+		if (reload)
+		{
+			tmdLog.message("Received SIGHUP. Restarting.");
+			parseDir();
+			reload = false;
+		}
 	}
 }
