@@ -29,3 +29,5 @@ Here is an example of a job config file:
 }
 ```
 **Note: Although comments are not strictly allowed in json, the jsonx parser I am using(courtesy of Gian Merlino) does accept comments delimited by "//".**
+
+For a preconfigured taskmasterd installation example, check out the examples branch.
