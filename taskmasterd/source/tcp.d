@@ -51,27 +51,31 @@ void	process()
 			client.blocking(0);
 			tmdLog.net("Client \"" ~ client.hostName ~ "\" connected on port " ~ to!string(globals.port) ~ ".");
 		}
-		catch (SocketAcceptException e){}
+		catch (Throwable){}
 	else
 	{
-		auto received = client.receive(buffer);
-		if (received == 0)
+		try
 		{
-			tmdLog.net("Client \"" ~ client.hostName ~ "\" disconnected.");
-			temp = "";
-			client.shutdown(SocketShutdown.BOTH);
-			client.close();
-		}
-		else if (received > 0)
-		{
-			temp ~= buffer[0 .. received].replace("\n", "").replace("\r","");
-			if (temp.endsWith(";;"))
+			auto received = client.receive(buffer);
+			if (received == 0)
 			{
-				string result = parseCommand(temp.chomp(";;")) ~ ";;";
-				client.send(result);
+				tmdLog.net("Client \"" ~ client.hostName ~ "\" disconnected.");
 				temp = "";
+				client.shutdown(SocketShutdown.BOTH);
+				client.close();
+			}
+			else if (received > 0)
+			{
+				temp ~= buffer[0 .. received].replace("\n", "").replace("\r","");
+				if (temp.endsWith(";;"))
+				{
+					string result = parseCommand(temp.chomp(";;")) ~ ";;";
+					client.send(result);
+					temp = "";
+				}
 			}
 		}
+		catch (Throwable){}
 	}
 }
 

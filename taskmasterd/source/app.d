@@ -13,6 +13,7 @@ extern(C) void signal(int sig, void function(int));
 
 extern(C) void handle(int sig)
 {
+	tmdLog.message("Received SIGHUP. Restarting.");
 	parseDir();
 }
 
