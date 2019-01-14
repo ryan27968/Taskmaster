@@ -3,7 +3,7 @@ Taskmasterd is configured using a simple `config.json`. Following are the config
 
  - "port"				TCP Listening port
  - "remoteConnections"	Allow remote connections
- - "Verbosity"			What type of messaged to print to the console.
+ - "verbosity"			What type of messaged to print to the console.
  - "configDirectory"	Directory containing all the ".tm.json" files.
  - "logDirectory"		Directory to save log files.
 
